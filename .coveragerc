@@ -1,0 +1,8 @@
+[run]
+omit = *tests*
+branch = True
+source =
+       breaking_changes
+
+[report]
+fail_under = 100
