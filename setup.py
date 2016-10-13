@@ -1,22 +1,18 @@
 from setuptools import setup, find_packages
 
 
-def get_version():
-    import git
-    return git.Repo('.').tags[-1].name
-
 package = 'breaking_changes'
 
 setup(name=package,
-      version=get_version(),
+      version='0.1.0',
       packages=['breaking_changes'],
       description="Deprecation decorator",
       author="Andrea Crotti",
-      setup_requires=["GitPython>=2.0"],
+      setup_requires=["GitPython>=2.0", "jsondiff>=0.2.0"],
       author_email="andrea.crotti.0@gmail.com",
       license='MIT',
       classifiers=[
-          "Development Status :: 4 - Beta",
+          "Development Status :: 3 - Alpha",
           "License :: OSI Approved :: MIT License",
           "Programming Language :: Python",
           "Programming Language :: Python :: 2.7",
