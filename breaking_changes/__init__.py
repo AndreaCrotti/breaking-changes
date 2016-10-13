@@ -1,4 +1,10 @@
 import inspect
+import re
+import scandir
+
+from os import path
+
+PY_FILE_REGEXP = re.compile(r'[a-z_]\w*.py$')
 
 
 def function_args(func):
@@ -12,3 +18,10 @@ def _is_public_function(func):
 
 def public_interface(module):
     return inspect.getmembers(module, predicate=_is_public_function)
+
+
+def iter_modules(pth):
+    for root, dirs, files in scandir.walk(pth):
+        py_files = filter(lambda v: PY_FILE_REGEXP.match(v), files)
+        for py in py_files:
+            yield path.join(root, py)

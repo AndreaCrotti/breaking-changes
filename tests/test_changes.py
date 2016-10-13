@@ -20,3 +20,10 @@ def test_argspec():
 
 def test_get_public_interface():
     breaking_changes.public_interface(mod) == [('public_func', mod.public_func)]
+
+
+@pytest.mark.parametrize(('path', 'modules'), [
+    ('tests', ['tests/test_changes.py', 'tests/mod.py', 'tests/__init__.py'])
+])
+def test_iterate_modules(path, modules):
+    assert sorted(breaking_changes.iter_modules(path)) == sorted(modules)
