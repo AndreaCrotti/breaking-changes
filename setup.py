@@ -8,7 +8,7 @@ setup(name=package,
       packages=['breaking_changes'],
       description="Deprecation decorator",
       author="Andrea Crotti",
-      setup_requires=["GitPython>=2.0", "jsondiff>=0.2.0", "scandir>=1.3"],
+      setup_requires=["GitPython>=2.0", "jsondiff>=0.2.0", "scandir>=1.3", "pyyaml>=3.12"],
       author_email="andrea.crotti.0@gmail.com",
       license='MIT',
       entry_points={

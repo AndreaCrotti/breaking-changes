@@ -1,3 +1,6 @@
+from os import listdir
+
+
 def public_func(a, b):
     pass
 

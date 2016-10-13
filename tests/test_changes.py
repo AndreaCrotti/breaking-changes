@@ -26,7 +26,7 @@ def test_get_public_interface():
     ('tests', ['tests/test_changes.py', 'tests/mod.py', 'tests/__init__.py'])
 ])
 def test_iterate_modules(path, modules):
-    assert sorted(breaking_changes.iter_modules(path)) == sorted(modules)
+    assert sorted(breaking_changes.iter_modules(path, skip_tests=False)) == sorted(modules)
 
 
 @pytest.mark.parametrize(('inp', 'out'), [

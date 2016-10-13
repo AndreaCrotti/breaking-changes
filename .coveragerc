@@ -5,4 +5,4 @@ source =
        breaking_changes
 
 [report]
-fail_under = 60
+fail_under = 50
