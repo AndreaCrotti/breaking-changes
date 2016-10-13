@@ -11,6 +11,9 @@ setup(name=package,
       setup_requires=["GitPython>=2.0", "jsondiff>=0.2.0", "scandir>=1.3"],
       author_email="andrea.crotti.0@gmail.com",
       license='MIT',
+      entry_points={
+          'console_scripts': ['breaking-changes=breaking_changes:main'],
+      },
       classifiers=[
           "Development Status :: 3 - Alpha",
           "License :: OSI Approved :: MIT License",

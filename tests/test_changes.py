@@ -27,3 +27,11 @@ def test_get_public_interface():
 ])
 def test_iterate_modules(path, modules):
     assert sorted(breaking_changes.iter_modules(path)) == sorted(modules)
+
+
+@pytest.mark.parametrize(('inp', 'out'), [
+    ('package/module.py', 'package.module'),
+    ('module.py', 'module'),
+])
+def test_path_to_module(inp, out):
+    assert breaking_changes.path_to_module(inp) == out
