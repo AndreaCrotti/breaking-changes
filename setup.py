@@ -13,6 +13,9 @@ setup(name=package,
       license='MIT',
       entry_points={
           'console_scripts': ['breaking-changes=breaking_changes:main'],
+          'pytest11': [
+              'pytest_collector = breaking_changes.plugin',
+          ],
       },
       classifiers=[
           "Development Status :: 3 - Alpha",
