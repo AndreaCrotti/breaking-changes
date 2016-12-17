@@ -11,13 +11,13 @@ setup(name=package,
       setup_requires=["GitPython>=2.0", "jsondiff>=0.2.0", "scandir>=1.3", "pyyaml>=3.12"],
       author_email="andrea.crotti.0@gmail.com",
       license='MIT',
-      entry_points=[
+      entry_points={
           'console_scripts': [
-              'inspect=inspector:cli',
-              'compare=compare:cli',
-              'fetch=fetch:cli',
+              'inspect=breaking_changes.inspector:cli',
+              'compare=breaking_changes.compare:cli',
+              'fetch=breaking_changes.fetch:cli',
           ],
-      ],
+      },
       classifiers=[
           "Development Status :: 3 - Alpha",
           "License :: OSI Approved :: MIT License",
