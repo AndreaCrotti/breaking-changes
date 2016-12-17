@@ -3,11 +3,14 @@ import inspect
 from collections import namedtuple, defaultdict
 from functools import wraps
 
+from typing import Callable
+
+
 Trace = namedtuple('Trace', ['ret', 'args', 'kwargs'])
 result = defaultdict(list)
 
 
-def collect(func):
+def collect(func: Callable) -> Callable:
     @wraps(func)
     def _collect(*args, **kwargs):
         ret = func(*args, **kwargs)
