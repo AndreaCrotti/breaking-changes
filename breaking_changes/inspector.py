@@ -1,5 +1,6 @@
 import importlib
 import inspect
+import logging
 import re
 import scandir
 
@@ -8,6 +9,8 @@ import click
 from collections import defaultdict
 from os import path
 from typing import Callable, Generator
+
+logger = logging.getLogger(__name__)
 
 
 PY_FILE_REGEXP = re.compile(r'[a-z_]\w*.py$')
@@ -45,14 +48,14 @@ def analyze(root: str, skip_tests: bool=True) -> defaultdict:
         try:
             mod_obj = importlib.import_module(mod)
         except ImportError:
-            print(mod_path)
+            logger.warning("Could not find module %s", mod_path)
             continue
 
         for func_name, func in public_interface(mod_obj):
             try:
                 result[mod][func_name] = function_args(func)
             except ValueError:
-                print(mod, func_name)
+                logger.warning("Could not analyse %s.%s", mod, func_name)
 
     return result
 
@@ -60,4 +63,18 @@ def analyze(root: str, skip_tests: bool=True) -> defaultdict:
 @click.group()
 @click.pass_context
 def cli(ctx):
-    pass
+    logging.basicConfig()
+    logging.getLogger().setLevel(logging.DEBUG)
+
+
+@cli.command(help='report analysis')
+@click.argument('path')
+@click.pass_context
+def report(ctx, path):
+    # list of things to report that actually define a package
+    # - modules
+    # - functions
+    # - variables
+    from pprint import pprint
+    analysis = analyze(path)
+    pprint(dict(analysis))
