@@ -1,13 +1,15 @@
+import os
 import pytest
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+from unittest import mock
 
 from breaking_changes import inspector
 
 from tests import mod
+
+
+def relative(subpath: str) -> str:
+    return os.path.join(os.path.dirname(__file__), subpath)
 
 
 def func(a, b=None):
@@ -35,3 +37,12 @@ def test_iterate_modules(path, modules):
 ])
 def test_path_to_module(inp, out):
     assert inspector.path_to_module(inp) == out
+
+
+@pytest.mark.parametrize(('pkg_name', 'packages'), [
+    ('package1', ['a', 'b']),
+    ('package2', ['a'])
+])
+def test_package_collection(pkg_name: str, packages: list):
+    res = list(inspector.modules(relative(pkg_name)))
+    assert list(inspector.modules(relative(pkg_name))) == packages

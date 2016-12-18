@@ -1,8 +1,10 @@
+import glob
 import importlib
 import inspect
 import logging
 import re
 import scandir
+import pathlib
 
 import click
 
@@ -46,6 +48,7 @@ def analyze(root: str, skip_tests: bool=True) -> defaultdict:
     for mod_path in iter_modules(root, skip_tests=skip_tests):
         mod = path_to_module(mod_path)
         try:
+            # TODO: can't use import!!
             mod_obj = importlib.import_module(mod)
         except ImportError:
             logger.warning("Could not find module %s", mod_path)
@@ -58,6 +61,13 @@ def analyze(root: str, skip_tests: bool=True) -> defaultdict:
                 logger.warning("Could not analyse %s.%s", mod, func_name)
 
     return result
+
+
+def modules(root: str):
+    to_mod_name = lambda m: pathlib.Path(m).name[:-3]
+    return [mod for mod in
+            map(to_mod_name, glob.glob('{}/*.py'.format(root)))
+            if not mod.startswith('_')]
 
 
 @click.group()
