@@ -24,25 +24,17 @@ def test_get_public_interface():
     inspector.public_interface(mod) == [('public_func', mod.public_func)]
 
 
-@pytest.mark.parametrize(('path', 'modules'), [
-    ('tests', ['tests/test_inspector.py', 'tests/mod.py', 'tests/__init__.py', 'tests/test_collector.py'])
-])
-def test_iterate_modules(path, modules):
-    assert sorted(inspector.iter_modules(path, skip_tests=False)) == sorted(modules)
-
-
-@pytest.mark.parametrize(('inp', 'out'), [
-    ('package/module.py', 'package.module'),
-    ('module.py', 'module'),
-])
-def test_path_to_module(inp, out):
-    assert inspector.path_to_module(inp) == out
-
-
 @pytest.mark.parametrize(('pkg_name', 'packages'), [
     ('package1', ['a', 'b']),
-    ('package2', ['a'])
+    ('package2', ['a', 'nested.c'])
 ])
 def test_package_collection(pkg_name: str, packages: list):
-    res = list(inspector.modules(relative(pkg_name)))
-    assert list(inspector.modules(relative(pkg_name))) == packages
+    assert list(inspector.modules(relative(pkg_name), skip_tests=False)) == packages
+
+
+@pytest.mark.parametrize(('full', 'base', 'module'), [
+    ('/some/long/path/to/module.py', '/some/long/path/to', 'module'),
+    ('/some/long/path/to/module.py', '/some/long/path', 'to.module'),
+])
+def test_module_transformation(full, base, module):
+    assert inspector.module_transform(full, base) == module

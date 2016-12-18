@@ -16,15 +16,12 @@ logger = logging.getLogger(__name__)
 
 
 PY_FILE_REGEXP = re.compile(r'[a-z_]\w*.py$')
+PY_FILE_PUBLIC = re.compile(r'[a-z]\w*.py$') # only "public modules" here
 
 
 def function_args(func: Callable) -> dict:
     args = inspect.getargspec(func)
     return dict(args._asdict())
-
-
-def path_to_module(path: str) -> str:
-    return path.replace('/', '.')[:-3]
 
 
 def _is_public_function(func: Callable) -> bool:
@@ -35,12 +32,18 @@ def public_interface(module):
     return inspect.getmembers(module, predicate=_is_public_function)
 
 
-def iter_modules(pth: str, skip_tests: bool=True) -> Generator:
+def module_transform(full: str, root: str) -> str:
+    rel = pathlib.Path(full).relative_to(root)
+    return str(rel).replace('/', '.')[:-3]
+
+
+def modules(pth: str, skip_tests: bool=True) -> Generator:
     for root, dirs, files in scandir.walk(pth):
         if not skip_tests or 'tests' not in root:
-            py_files = filter(lambda v: PY_FILE_REGEXP.match(v), files)
+            py_files = filter(lambda v: PY_FILE_PUBLIC.match(v), files)
             for py in py_files:
-                yield path.join(root, py)
+                print(path.join(root, py))
+                yield module_transform(path.join(root, py), pth)
 
 
 def analyze(root: str, skip_tests: bool=True) -> defaultdict:
@@ -62,12 +65,6 @@ def analyze(root: str, skip_tests: bool=True) -> defaultdict:
 
     return result
 
-
-def modules(root: str):
-    to_mod_name = lambda m: pathlib.Path(m).name[:-3]
-    return [mod for mod in
-            map(to_mod_name, glob.glob('{}/*.py'.format(root)))
-            if not mod.startswith('_')]
 
 
 @click.group()
