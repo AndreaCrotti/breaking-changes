@@ -46,25 +46,10 @@ def modules(pth: str, skip_tests: bool=True) -> Generator:
                 yield module_transform(path.join(root, py), pth)
 
 
-def analyze(root: str, skip_tests: bool=True) -> defaultdict:
-    result = defaultdict(dict)
-    for mod_path in iter_modules(root, skip_tests=skip_tests):
-        mod = path_to_module(mod_path)
-        try:
-            # TODO: can't use import!!
-            mod_obj = importlib.import_module(mod)
-        except ImportError:
-            logger.warning("Could not find module %s", mod_path)
-            continue
-
-        for func_name, func in public_interface(mod_obj):
-            try:
-                result[mod][func_name] = function_args(func)
-            except ValueError:
-                logger.warning("Could not analyse %s.%s", mod, func_name)
-
-    return result
-
+def functions(mod_path: str, root: str) -> Generator:
+    mod = module_transform(mod_path, root)
+    mod_obj = importlib.import_module(mod)
+    return [x[0] for x in public_interface(mod_obj)]
 
 
 @click.group()
@@ -83,5 +68,3 @@ def report(ctx, path):
     # - functions
     # - variables
     from pprint import pprint
-    analysis = analyze(path)
-    pprint(dict(analysis))

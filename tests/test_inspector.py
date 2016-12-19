@@ -7,9 +7,12 @@ from breaking_changes import inspector
 
 from tests import mod
 
+TEST_ROOT = os.path.dirname(__file__)
+BASE_ROOT = os.path.abspath(os.path.join(TEST_ROOT, '..'))
+
 
 def relative(subpath: str) -> str:
-    return os.path.join(os.path.dirname(__file__), subpath)
+    return os.path.abspath(os.path.join(TEST_ROOT, subpath))
 
 
 def func(a, b=None):
@@ -18,6 +21,10 @@ def func(a, b=None):
 
 def test_argspec():
     inspector.function_args(func) == {'args': ['a', 'b'], 'keywords': None, 'defaults': (None,), 'varargs': None}
+
+
+def test_list_functions():
+    assert list(inspector.functions(relative('package1/a.py'), BASE_ROOT)) == ['func1', 'func2']
 
 
 def test_get_public_interface():
